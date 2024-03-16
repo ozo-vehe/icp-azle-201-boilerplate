@@ -1,0 +1,81 @@
+.form {
+    display: inline-block;
+    background-color: #f9f9f9; /* Light gray background */
+    color: #333; /* Dark gray text color */
+    padding: 20px; /* Add some padding around the form */
+    border-radius: 8px; /* Rounded corners */
+}
+
+.form-row {
+    margin-bottom: 15px; /* Add some space between form rows */
+}
+
+.form-label,
+.form-input {
+    font-size: 1.1em;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.form-label {
+    min-width: 500px; /* Adjust the minimum width of the label */
+}
+
+.form-input input[type="text"],
+.form-input input[type="date"],
+.form-input input[type="password"],
+.form-input input[type="email"] {
+    width: 500px; /* Adjust input width to fill remaining space */
+    padding: 12px; /* Increase padding for better spacing */
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #fff; /* White background color */
+    color: #333; /* Dark gray text color */
+}
+
+.form-row .form-input textarea {
+    width: 500px; /* Adjust input width to fill remaining space */
+    padding: 12px; /* Increase padding for better spacing */
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #fff; /* White background color */
+    color: #333; /* Dark gray text color */
+}
+
+.form-row .form-input input[type="file"] {
+    width: 500px; /* Adjust input width to fill remaining space */
+    padding: 12px; /* Adjust padding for better spacing */
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #fff; /* White background color */
+    color: #333; /* Dark gray text color */
+}
+
+.form-input input[type="radio"] {
+    margin-right: 15px; /* Add more space between radio buttons */
+    padding: 12px; /* Increase padding for better spacing */
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #fff; /* White background color */
+    color: #333; /* Dark gray text color */
+}
+
+.form-footer {
+    text-align: right; /* Align button to the right */
+}
+
+.form-button {
+    border: none;
+    padding: 12px 24px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff; /* Blue background color */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.form-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}

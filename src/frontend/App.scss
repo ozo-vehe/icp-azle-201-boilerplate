@@ -1,0 +1,214 @@
+#root {
+  width: 100%;
+  margin: 0 auto;
+  // padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 19em;
+  padding: 1.5em;
+}
+
+.section {
+  padding: 2em;
+  margin: 2em;
+}
+
+input {
+  font-size: larger;
+}
+
+textarea {
+  font-size: larger;
+}
+
+.content {
+  text-align: center;
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+}
+
+header {
+  background: linear-gradient(to right, #006400, #00008B, #FFFF00);
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+  position: relative;
+}
+
+header img {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+nav {
+  background-color: #4CAF50;
+  overflow: hidden;
+  text-align: center;
+}
+
+nav a {
+  display: inline-block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.hero-section {
+  background: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8d5z4wmW_aKlbR3Pd1-EYzjKdEuhFfbBuXFY11pmr4ARDPL2Ib-j_63JQb1u45Jqy0lA&usqp=CAU') center/cover no-repeat;
+  color: #fff;
+  background: linear-gradient(to right, #006400, #00008B, #FFFF00);
+  text-align: center;
+  padding: 150px 0;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.hero-section h1 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.features-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.feature {
+  width: 30%;
+  background-color: #fff;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.certificate-verification {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 20px; /* Adjusted margin-bottom */
+}
+
+.certificate-verification label,
+.certificate-verification input,
+.certificate-verification button {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.certificate-verification button {
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+}
+
+.certificate-verification button:hover {
+  background-color: #45a049;
+}
+
+footer {
+  background: linear-gradient(to right, #006400, #00008B, #FFFF00);
+  color: #fff;
+  text-align: center;
+  padding: 1em;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin-top: 20px; /* Added margin-top to create space */
+}
+
+/* Style for the modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.additional-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.additional-content h2,
+.additional-content p {
+  text-align: center;
+}
+
+.additional-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.additional-content h2,
+.additional-content p {
+  text-align: center;
+}
+
+.button_new{
+  background: darkblue;
+  color: white;
+  padding: 10px 20px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer;
+  transition: background 0.3s ease; /* Smooth transition on hover */
+}

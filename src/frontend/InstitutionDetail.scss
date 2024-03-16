@@ -1,0 +1,114 @@
+.overview {
+    display: inline-block;
+    padding-top: 3em;
+    background-color: white;
+    color: black;
+}
+
+.overview-title {
+    font-size: 2.7em;
+    line-height: 1.1;
+    padding: 10px;
+    display: block;
+    background-color: white;
+    color: black;
+}
+
+.overview-description {
+    font-size: 1.3em;
+    padding: 10px;
+    display: block;
+    background-color: white;
+    color: black;
+}
+
+.overview-image { 
+    display: block;
+    padding: 10px;
+    background-color: white;
+    color: black;
+}
+
+.overview-image img {
+    width: 250px;
+    background-color: white;
+    color: black;
+}
+
+.bid-table {
+    display: inline-block;
+    font-size: 1.1em;
+    background-color: white;
+    color: black;
+}
+
+.bid-table tr {
+    text-align: left;
+    background-color: white;
+    color: black;
+}
+
+.bid-table td,
+.bid-table th {
+    padding: 10px;
+    background-color: white;
+    color: black;
+}
+
+.main-price {
+    font-size: 2em;
+    font-weight: bold;
+    background-color: white;
+    color: black;
+}
+
+.deal {
+    font-size: 1.2em;
+    background-color: white;
+    color: black;
+}
+
+.bid-form {
+    vertical-align: middle;
+    background-color: white;
+    color: black;
+}
+
+.bid-form input {
+    margin: 10px;
+    padding: 10px;
+    width: 80px;
+    font-size: x-large;
+    border: 1px solid black;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: white;
+    color: black;
+}
+
+.bid-form button {
+    background-color: #7070ed;
+    margin: 10px;
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    font-size: x-large;
+    border: 1px solid black;
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    font-family: inherit;
+}
+
+.error-message {
+    color: red;
+}
+.h {
+
+    background-color: white;
+    color: black;
+    
+}
+
+  
