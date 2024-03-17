@@ -4,13 +4,13 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { initializeContract } from "./utils/icp";
 
-console.log("Yes")
-console.log(initializeContract())
+console.log("Yes, no")
+console.log(await initializeContract())
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-window.renderICPromise = initializeContract()
+window.renderICPromise = await initializeContract()
   .then(() => {
     ReactDOM.render(
       <React.StrictMode>
