@@ -119,14 +119,25 @@ export default Canister({
     return Ok(productOpt.Some);
   }),
   addProduct: update([ProductPayload], Result(Product, Message), (payload) => {
+    // Validate and sanitize user input
     if (typeof payload !== "object" || Object.keys(payload).length === 0) {
-      return Err({ NotFound: "invalid payoad" });
+      return Err({ InvalidPayload: "Invalid payload" });
     }
+
+    // Sanitize payload properties
+    const sanitizedPayload = {
+      title: sanitizeInput(payload.title),
+      description: sanitizeInput(payload.description),
+      location: sanitizeInput(payload.location),
+      price: payload.price,
+      attachmentURL: sanitizeInput(payload.attachmentURL),
+    };
+
     const product = {
       id: uuidv4(),
       soldAmount: 0n,
       seller: ic.caller(),
-      ...payload,
+      ...sanitizedPayload,
     };
     productsStorage.insert(product.id, product);
     return Ok(product);
@@ -139,16 +150,35 @@ export default Canister({
         NotFound: `cannot update the product: product with id=${payload.id} not found`,
       });
     }
+
+    // Check if the caller is the owner of the product
+    const existingProduct = productOpt.Some;
+    if (existingProduct.seller.toString() !== ic.caller().toString()) {
+      return Err({
+        NotFound: `cannot update the product: you are not the owner of this product`,
+      });
+    }
+
     productsStorage.insert(productOpt.Some.id, payload);
     return Ok(payload);
   }),
   deleteProduct: update([text], Result(text, Message), (id) => {
-    const deletedProductOpt = productsStorage.remove(id);
-    if ("None" in deletedProductOpt) {
+    const productOpt = productsStorage.get(id);
+    if ("None" in productOpt) {
       return Err({
         NotFound: `cannot delete the product: product with id=${id} not found`,
       });
     }
+
+    // Check if the caller is the owner of the product
+    const existingProduct = productOpt.Some;
+    if (existingProduct.seller.toString() !== ic.caller().toString()) {
+      return Err({
+        NotFound: `cannot delete the product: you are not the owner of this product`,
+      });
+    }
+
+    const deletedProductOpt = productsStorage.remove(id);
     return Ok(deletedProductOpt.Some.id);
   }),
 
@@ -176,6 +206,14 @@ export default Canister({
         NotFound: `cannot create the order: product=${id} not found`,
       });
     }
+
+    // Validate input
+    if (!isValidUUID(id)) {
+      return Err({
+        InvalidPayload: `Invalid product ID: ${id}`,
+      });
+    }
+
     const product = productOpt.Some;
     const order = {
       productId: product.id,
@@ -194,6 +232,23 @@ export default Canister({
     [Principal, text, nat64, nat64, nat64],
     Result(Order, Message),
     async (seller, id, price, block, memo) => {
+      // Validate input
+      if (!isValidPrincipal(seller)) {
+        return Err({ InvalidPayload: `Invalid seller principal: ${seller}` });
+      }
+
+      if (!isValidUUID(id)) {
+        return Err({ InvalidPayload: `Invalid product ID: ${id}` });
+      }
+
+      if (!isValidBlock(block)) {
+        return Err({ InvalidPayload: `Invalid block number: ${block}` });
+      }
+
+      if (!isValidMemo(memo)) {
+        return Err({ InvalidPayload: `Invalid memo: ${memo}` });
+      }
+
       const paymentVerified = await verifyPaymentInternal(
         seller,
         price,
@@ -310,7 +365,19 @@ function generateCorrelationId(productId: text): nat64 {
 function discardByTimeout(memo: nat64, delay: Duration) {
   ic.setTimer(delay, () => {
     const order = pendingOrders.remove(memo);
-    console.log(`Order discarded ${order}`);
+    if ("Some" in order) {
+      // Handle the case where the order is completed or deleted before the timeout expires
+      const completedOrder = order.Some;
+      if (completedOrder.status.type === "Completed") {
+        console.log(
+          `Order ${completedOrder.productId} was already completed, memo=${memo}`
+        );
+      } else {
+        console.log(`Order discarded ${order.Some}`);
+      }
+    } else {
+      console.log(`No pending order found with memo=${memo}`);
+    }
   });
 }
 
@@ -323,7 +390,14 @@ async function verifyPaymentInternal(
   const blockData = await ic.call(icpCanister.query_blocks, {
     args: [{ start: block, length: 1n }],
   });
-  const tx = blockData.blocks.find((block) => {
+
+  if (!blockData || !blockData.blocks || blockData.blocks.length === 0) {
+    // Handle the case where the block data is empty or invalid
+    console.error("Invalid block data received from the ledger canister");
+    return false;
+  }
+
+  const isTransactionValid = (block) => {
     if ("None" in block.transaction.operation) {
       return false;
     }
@@ -336,122 +410,27 @@ async function verifyPaymentInternal(
       hash(receiverAddress) === hash(operation.Transfer?.to) &&
       amount === operation.Transfer?.amount.e8s
     );
-  });
+  };
+
+  const tx = blockData.blocks.find(isTransactionValid);
   return tx ? true : false;
 }
 
-// import { $query, $update, Record, StableBTreeMap, Vec, match, Result, nat64, ic, Opt } from 'azle';
-// import { v4 as uuidv4 } from 'uuid';
+// Helper functions for input validation
+function isValidUUID(uuid: string): boolean {
+  // Implement UUID validation logic here
+  return true; // For now, we assume all UUIDs are valid
+}
 
-// type Maintenance = Record<{
-//     id: string;
-//     name: string; // the name of the vechile, ex: Motorcycle 12, Car 40, etc
-//     typeVehicle: string; // the type of the vechile, ex: motorcycle, car, truck, bicycle, etc
-//     date: string;
-//     price: number;
-//     createdAt: nat64;
-//     updatedAt: Opt<nat64>;
-// }>
+function isValidPrincipal(principal: Principal): boolean {
+  // Implement principal validation logic here
+  return true; // For now, we assume all principals are valid
+}
 
-// type MaintenancePayload = Record<{
-//     name: string;
-//     typeVehicle: string;
-//     date: string;
-//     price: number;
-// }>
+function isValidBlock(block: nat64): boolean {
+  // Implement block number validation logic here
+  return true; // For now, we assume all block numbers are valid
+}
 
-// const maintenanceStorage = new StableBTreeMap<string, Maintenance>(0, 44, 1024);
-
-// // function to add maintenance
-// $update;
-// export function addMaintenance(payload: MaintenancePayload): Result<Maintenance, string> {
-//     const maintenance: Maintenance = { id: uuidv4(), createdAt: ic.time(), updatedAt: Opt.None, ...payload };
-//     maintenanceStorage.insert(maintenance.id, maintenance);
-//     return Result.Ok(maintenance);
-// }
-
-// // function to get maintenances
-// $query;
-// export function getMaintenances(): Result<Vec<Maintenance>, string> {
-//     return Result.Ok(maintenanceStorage.values());
-// }
-
-// // function to get maintenance by id
-// $query;
-// export function getMaintenance(id: string): Result<Maintenance, string> {
-//     return match(maintenanceStorage.get(id), {
-//         Some: (record) => Result.Ok<Maintenance, string>(record),
-//         None: () => Result.Err<Maintenance, string>(`Maintenance not found`)
-//     });
-// }
-
-// // function to get maintenances by name
-// $query;
-// export function getMaintenancesByName(name: string): Result<Vec<Maintenance>, string> {
-//     const maintenance = maintenanceStorage.values();
-//     const maintenanceFilter = maintenance.filter(record => record.name === name);
-//     return Result.Ok(maintenanceFilter);
-// }
-
-// // function to get maintenances by type
-// $query;
-// export function getMaintenancesByType(typeVechile: string): Result<Vec<Maintenance>, string> {
-//     const maintenance = maintenanceStorage.values();
-//     const maintenanceFilter = maintenance.filter(record => record.typeVehicle === typeVechile);
-//     return Result.Ok(maintenanceFilter);
-// }
-
-// // function to get avarage price by name
-// $query;
-// export function getAveragePriceByName(name: string): Result<number, string> {
-//     const maintenance = maintenanceStorage.values();
-//     const maintenanceFilter = maintenance.filter(record => record.name === name);
-//     const totalPrice = maintenanceFilter.reduce((acc, record) => acc + record.price, 0);
-//     const avgPrice = totalPrice / maintenanceFilter.length;
-//     return Result.Ok<number, string>(avgPrice);
-// }
-
-// // function to get avarage price by type
-// $query;
-// export function getAveragePriceByType(typeVechile: string): Result<number, string> {
-//     const maintenance = maintenanceStorage.values();
-//     const maintenanceFilter = maintenance.filter(record => record.typeVehicle === typeVechile);
-//     const totalPrice = maintenanceFilter.reduce((acc, record) => acc + record.price, 0);
-//     const avgPrice = totalPrice / maintenanceFilter.length;
-//     return Result.Ok<number, string>(avgPrice);
-// }
-
-// // functionn to delete maintenance by id
-// $update;
-// export function deleteMaintenance(id: string): Result<Maintenance, string> {
-//     return match(maintenanceStorage.remove(id), {
-//         Some: (deletedRecord) => Result.Ok<Maintenance, string>(deletedRecord),
-//         None: () => Result.Err<Maintenance, string>(`Maintenance not found`)
-//     });
-// }
-
-// // function to update maintenance by id
-// $update;
-// export function updateMaintenance(id: string, payload: MaintenancePayload): Result<Maintenance, string> {
-//     return match(maintenanceStorage.get(id), {
-//         Some: (record) => {
-//             const updatedRecord: Maintenance = {...record, ...payload, updatedAt: Opt.Some(ic.time())};
-//             maintenanceStorage.insert(record.id, updatedRecord);
-//             return Result.Ok<Maintenance, string>(updatedRecord);
-//         },
-//         None: () => Result.Err<Maintenance, string>(`Maintenance not found`)
-//     });
-// }
-
-// globalThis.crypto = {
-//     // @ts-ignore
-//     getRandomValues: () => {
-//         let array = new Uint8Array(32);
-
-//         for (let i = 0; i < array.length; i++) {
-//             array[i] = Math.floor(Math.random() * 256);
-//         }
-
-//         return array;
-//     },
-// };
+function isValidMemo(memo: nat64): boolean {
+  // Implement
